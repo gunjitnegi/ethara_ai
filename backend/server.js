@@ -58,14 +58,19 @@ connectDB().then(() => {
 
   // SERVE FRONTEND IN PRODUCTION
   if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../frontend/dist')));
+    const frontendPath = path.resolve(__dirname, '..', 'frontend', 'dist');
+    app.use(express.static(frontendPath));
     app.get('*', (req, res) => {
-      res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'));
+      res.sendFile(path.join(frontendPath, 'index.html'));
+    });
+  } else {
+    app.get('/', (req, res) => {
+      res.send('API is running...');
     });
   }
 
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
   });
 
