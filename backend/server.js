@@ -2,51 +2,49 @@ require('./utils/logger'); // Initialize custom logger first
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('mongo-sanitize');
 const { connectDB } = require('./config/db');
+const path = require('path');
 
-dotenv.config();
 const app = express();
 
 // Trust Railway's proxy for rate limiting
 app.set('trust proxy', 1);
 
-// Security Middleware
-app.use(helmet()); // Security headers
-app.use((req, res, next) => {
-  req.body = mongoSanitize(req.body);
-  req.query = mongoSanitize(req.query);
-  req.params = mongoSanitize(req.params);
-  next();
-});
-
-// Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 200, // General limit
-  message: 'Too many requests, please try again later'
-});
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5, // Strict limit for auth (signup/login)
-  message: 'Too many login/signup attempts, please try again after 15 minutes'
-});
-app.use(limiter);
-
 // Middleware
+app.use(helmet()); // Security headers
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   credentials: true
 }));
+
+// Body parser must come BEFORE sanitization to handle large payloads (like photos)
 app.use(express.json({ limit: '10mb' }));
 
-const path = require('path');
+app.use((req, res, next) => {
+  if (req.body) req.body = mongoSanitize(req.body);
+  if (req.query) req.query = mongoSanitize(req.query);
+  if (req.params) req.params = mongoSanitize(req.params);
+  next();
+});
 
-// Initialize database
+// Rate Limiters
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200, 
+  message: 'Too many requests, please try again later'
+});
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20, // Increased from 5 to 20 for better testing experience
+  message: 'Too many login/signup attempts, please try again after 15 minutes'
+});
+app.use(limiter);
+
+// Initialize database and routes
 connectDB().then(() => {
   const authRoutes = require('./routes/auth.routes');
   const projectRoutes = require('./routes/project.routes');
