@@ -16,9 +16,14 @@ frontend/.env
 
 # Logs
 *.log
+server.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Testing
+backend/test-*.js
+test-*.js
 
 # OS Files
 .DS_Store
