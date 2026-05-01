@@ -60,8 +60,13 @@ connectDB().then(() => {
   if (process.env.NODE_ENV === 'production') {
     const frontendPath = path.resolve(__dirname, '..', 'frontend', 'dist');
     app.use(express.static(frontendPath));
-    app.get('(.*)', (req, res) => {
-      res.sendFile(path.join(frontendPath, 'index.html'));
+    
+    // Express 5 compatible catch-all: Use a middleware instead of a string path
+    app.use((req, res, next) => {
+      if (req.method === 'GET' && !req.path.startsWith('/auth') && !req.path.startsWith('/projects') && !req.path.startsWith('/tasks') && !req.path.startsWith('/notifications')) {
+        return res.sendFile(path.join(frontendPath, 'index.html'));
+      }
+      next();
     });
   } else {
     app.get('/', (req, res) => {
