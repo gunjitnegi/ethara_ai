@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, Shield, Palette, Camera, Bell, Globe, LogOut, Key, Mail, Briefcase, Volume2, LayoutGrid } from 'lucide-react';
+import { User, Shield, Palette, Camera, Bell, Globe, LogOut, Key, Mail, Briefcase, Volume2, LayoutGrid, Eye, EyeOff } from 'lucide-react';
 import api from '../api';
 
 function SettingsPage({ user }) {
   const [activeTab, setActiveTab] = useState('profile');
   const [uploading, setUploading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [photoPreview, setPhotoPreview] = useState(user.profilePhoto || '');
   const fileRef = useRef(null);
 
@@ -311,8 +312,31 @@ function SettingsPage({ user }) {
             <h3 className="text-xl font-black text-gray-900 mb-2">Update Password</h3>
             {passwordError && <div className="mb-4 bg-red-50 text-red-600 p-3 rounded-xl text-xs font-bold text-center">{passwordError}</div>}
             <div className="space-y-4">
-              <input type="password" placeholder="New Password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm outline-none" />
-              <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm outline-none" />
+              <div className="relative">
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="New Password" 
+                  value={newPassword} 
+                  onChange={(e) => setNewPassword(e.target.value)} 
+                  className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm outline-none pr-12" 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              <div className="relative">
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="Confirm Password" 
+                  value={confirmPassword} 
+                  onChange={(e) => setConfirmPassword(e.target.value)} 
+                  className="w-full px-4 py-3 bg-gray-50 rounded-xl text-sm outline-none pr-12" 
+                />
+              </div>
               <div className="flex space-x-3">
                 <button onClick={() => setShowPasswordModal(false)} className="flex-1 py-3 text-sm font-bold text-gray-500">Cancel</button>
                 <button onClick={handlePasswordUpdate} disabled={passwordLoading} className="flex-1 py-3 text-sm font-bold bg-[#5b5cc8] text-white rounded-xl">{passwordLoading ? 'Updating...' : 'Save'}</button>

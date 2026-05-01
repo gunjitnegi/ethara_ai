@@ -1,0 +1,31 @@
+--- SAMPLE TEST DATA FOR ETHARA AI ---
+
+PROJECT 1:
+Name: AI Research Platform
+Description: Building a collaborative space for researchers to share multi-modal datasets and trained models.
+Deadline: 2026-12-31
+
+TASKS FOR PROJECT 1:
+1. Design Vision Extractor Architecture: Implement multi-stage contextual routing for video analysis.
+2. Integrate FAISS Vector Store: Set up semantic search layer for 250,000+ data points.
+3. Fix Tokenization Buffer Error: Debug memory leak in the preprocessing pipeline.
+
+PROJECT 2:
+Name: F1 Race Intelligence Dashboard
+Description: Real-time telemetry visualization and race strategy simulator using FastF1 API.
+Deadline: 2026-08-15
+
+TASKS FOR PROJECT 2:
+1. Three.js Track Visualization: Create isometric 3D track map with real-time driver positions.
+2. Tire Degradation Model: Implement FastAPI endpoint for race strategy estimates.
+3. Global Timeline Sync: Coordinate telemetry charts with 3D animation playback.
+
+PROJECT 3:
+Name: Enterprise Task Suite
+Description: High-security task management system with role-based access and session tracking.
+Deadline: 2026-10-01
+
+TASKS FOR PROJECT 3:
+1. Implement RBAC Middleware: Secure all endpoints with permission-level checks.
+2. Device Session Tracker: Build UI for managing active sessions and remote logout.
+3. Team Performance Leaderboard: Calculate completion metrics and display visual progress.

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { Mail, Lock, LogIn, Eye, EyeOff } from 'lucide-react';
 import api from '../api';
 
 function Login({ onLogin }) {
   const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', password: '', secretKey: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // ... rest of the logic ...
   const validateForm = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
@@ -16,7 +18,6 @@ function Login({ onLogin }) {
     }
 
     if (!isLogin) {
-      // Strong password regex: min 8 chars, 1 upper, 1 number, 1 special symbol
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
       if (!passwordRegex.test(formData.password)) {
         setError('Password must be at least 8 characters, include an uppercase letter, a number, and a special symbol (@$!%*?&)');
@@ -52,7 +53,7 @@ function Login({ onLogin }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#a8d5f2] to-[#e4f1f9] relative overflow-hidden">
-      {/* Decorative background clouds (CSS representation) */}
+      {/* Decorative background clouds */}
       <div className="absolute top-10 left-10 w-64 h-64 bg-white/40 rounded-full blur-3xl"></div>
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-white/50 rounded-full blur-3xl"></div>
       
@@ -115,13 +116,20 @@ function Login({ onLogin }) {
               <Lock className="h-4 w-4 text-gray-400" />
             </div>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
               placeholder="Password"
-              className="w-full pl-10 pr-4 py-3 bg-gray-50/80 border-none rounded-xl focus:ring-2 focus:ring-gray-200 outline-none transition-all placeholder-gray-400 text-sm"
+              className="w-full pl-10 pr-12 py-3 bg-gray-50/80 border-none rounded-xl focus:ring-2 focus:ring-gray-200 outline-none transition-all placeholder-gray-400 text-sm"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
 
           {!isLogin && (
@@ -130,9 +138,9 @@ function Login({ onLogin }) {
                 <Lock className="h-4 w-4 text-gray-400" />
               </div>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Admin Secret Key (Optional)"
-                className="w-full pl-10 pr-4 py-3 bg-gray-50/80 border-none rounded-xl focus:ring-2 focus:ring-gray-200 outline-none transition-all placeholder-gray-400 text-sm"
+                className="w-full pl-10 pr-12 py-3 bg-gray-50/80 border-none rounded-xl focus:ring-2 focus:ring-gray-200 outline-none transition-all placeholder-gray-400 text-sm"
                 value={formData.secretKey}
                 onChange={(e) => setFormData({ ...formData, secretKey: e.target.value })}
               />
