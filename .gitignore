@@ -34,3 +34,9 @@ Thumbs.db
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# Project Documentation & Tests
+README.txt
+security_audit.md
+test.txt
+
