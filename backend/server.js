@@ -5,7 +5,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const mongoSanitize = require('express-mongo-sanitize');
+const mongoSanitize = require('mongo-sanitize');
 const { connectDB } = require('./config/db');
 
 dotenv.config();
@@ -13,7 +13,12 @@ const app = express();
 
 // Security Middleware
 app.use(helmet()); // Security headers
-app.use(mongoSanitize()); // Prevent NoSQL injection
+app.use((req, res, next) => {
+  req.body = mongoSanitize(req.body);
+  req.query = mongoSanitize(req.query);
+  req.params = mongoSanitize(req.params);
+  next();
+});
 
 // Rate Limiting
 const limiter = rateLimit({
