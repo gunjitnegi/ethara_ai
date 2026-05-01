@@ -266,14 +266,33 @@ function Projects({ user }) {
             <form onSubmit={handleCreateTask} className="space-y-5">
               <input required className="w-full px-4 py-3 bg-gray-50 rounded-xl outline-none text-sm" placeholder="Task Title" value={newTask.title} onChange={e => setNewTask({...newTask, title: e.target.value})} />
               <textarea className="w-full px-4 py-3 bg-gray-50 rounded-xl outline-none text-sm" placeholder="Description" rows="2" value={newTask.description} onChange={e => setNewTask({...newTask, description: e.target.value})}></textarea>
-              <select className="w-full px-4 py-3 bg-gray-50 rounded-xl outline-none text-sm" value={newTask.assignedTo} onChange={e => setNewTask({...newTask, assignedTo: e.target.value})}>
-                <option value="">Unassigned</option>
-                {projects.find(p => p._id === newTask.projectId)?.membersData?.map(m => <option key={m._id} value={m._id}>{m.name}</option>)}
-              </select>
-              <input type="date" className="w-full px-4 py-3 bg-gray-50 rounded-xl outline-none text-sm" value={newTask.deadline} onChange={e => setNewTask({...newTask, deadline: e.target.value})} />
-              <div className="flex justify-end space-x-3">
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase ml-1">Assigned To</label>
+                  <select className="w-full px-4 py-3 bg-gray-50 rounded-xl outline-none text-sm" value={newTask.assignedTo} onChange={e => setNewTask({...newTask, assignedTo: e.target.value})}>
+                    <option value="">Unassigned</option>
+                    {projects.find(p => p._id === newTask.projectId)?.membersData?.map(m => <option key={m._id} value={m._id}>{m.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase ml-1">Priority</label>
+                  <select className="w-full px-4 py-3 bg-gray-50 rounded-xl outline-none text-sm" value={newTask.priority} onChange={e => setNewTask({...newTask, priority: e.target.value})}>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="relative">
+                <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase ml-1">Deadline</label>
+                <input type="date" className="w-full px-4 py-3 bg-gray-50 rounded-xl outline-none text-sm" value={newTask.deadline} onChange={e => setNewTask({...newTask, deadline: e.target.value})} />
+              </div>
+
+              <div className="flex justify-end space-x-3 pt-4">
                 <button type="button" onClick={() => setShowTaskModal(false)} className="px-5 py-2.5 font-bold text-gray-500">Cancel</button>
-                <button type="submit" className="px-5 py-2.5 bg-[#5b5cc8] text-white rounded-xl font-bold">Create</button>
+                <button type="submit" className="px-5 py-2.5 bg-[#5b5cc8] text-white rounded-xl font-bold shadow-lg shadow-indigo-100">Create Task</button>
               </div>
             </form>
           </div>
