@@ -11,6 +11,9 @@ const { connectDB } = require('./config/db');
 dotenv.config();
 const app = express();
 
+// Trust Railway's proxy for rate limiting
+app.set('trust proxy', 1);
+
 // Security Middleware
 app.use(helmet()); // Security headers
 app.use((req, res, next) => {
