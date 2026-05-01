@@ -1,0 +1,91 @@
+========================================================================
+             ETHARA AI: DEMO VIDEO SCRIPT & PRESENTATION GUIDE
+========================================================================
+
+VIDEO STRUCTURE (Total Duration: 3-5 Minutes)
+--------------------------------------------
+1. Intro & Dashboard (1 min)
+2. Admin vs Member Workflow (1.5 min)
+3. Technical Deep Dive: RBAC & Security (1 min)
+4. Deployment & Conclusion (0.5 min)
+
+------------------------------------------------------------------------
+PART 1: INTRO & DASHBOARD
+------------------------------------------------------------------------
+ACTION: Start on the Login page. Show the "Show Password" toggle.
+SCRIPT: "Hello, I am [Your Name]. Today I'm presenting Ethara AI, a 
+premium project management suite. I'll start by logging in as an Admin. 
+Notice the UI is clean and responsive, with secure password visibility 
+toggles for better UX."
+
+ACTION: Log in and show the Dashboard. Point out the charts and search.
+SCRIPT: "Once logged in, we see the real-time Dashboard. It gives a 
+high-level view of tasks, priorities, and team performance. I can 
+quickly search for any project or task using this high-performance 
+search bar."
+
+------------------------------------------------------------------------
+PART 2: RBAC WORKFLOW (ADMIN VS MEMBER)
+------------------------------------------------------------------------
+ACTION: Go to Projects page. Create a new Project. Add a task.
+SCRIPT: "As an ADMIN, I have full control. I'll create a new project 
+named 'AI Research'. Now, I'll add a member and create a task with 
+'High' priority. Note that only Admins see these 'New Project' and 
+'Add Member' buttons."
+
+ACTION: Log out. Log in as a MEMBER.
+SCRIPT: "Now, I'll switch to a MEMBER account. Notice the difference: 
+I can see the tasks assigned to me, but I cannot create projects or 
+delete users. My dashboard is focused on my specific progress."
+
+------------------------------------------------------------------------
+PART 3: HOW RBAC WAS ACHIEVED (The "Technical" part)
+------------------------------------------------------------------------
+ACTION: Briefly show the code for `auth.middleware.js` or the User model.
+SCRIPT: "To achieve this Role-Based Access Control, I implemented a 
+three-layer security model:
+1. DATABASE: The User schema includes a 'role' field.
+2. MIDDLEWARE: I wrote custom Express middlewares like 'verifyToken' 
+   and 'adminOnly' that check the JWT before allowing access.
+3. FRONTEND: React conditionally renders components based on the 
+   role decoded from the token.
+I also added IDOR protection so members can't guess IDs to access 
+unauthorized projects."
+
+------------------------------------------------------------------------
+PART 4: DEPLOYMENT & SECURITY
+------------------------------------------------------------------------
+ACTION: Show the live URL (etharaai-production-c7b2.up.railway.app).
+SCRIPT: "The application is fully live and deployed on Railway. I used 
+a unified build pipeline where Express serves the optimized React 
+frontend statically. For security, we use Helmet headers, XSS 
+sanitization, and MongoDB injection protection to ensure the data is 
+safe in a production environment."
+
+ACTION: End on the Dashboard.
+SCRIPT: "Ethara AI fulfills all requirements: RBAC, real-time tracking, 
+and cloud deployment. Thank you for your time."
+
+------------------------------------------------------------------------
+TOP 3 QUESTIONS TO PREPARE FOR:
+------------------------------------------------------------------------
+1. "How do you handle password security?"
+   ANSWER: "We use Bcrypt for one-way salting and hashing. Passwords 
+   are never stored in plain text."
+
+2. "How does the server handle both Frontend and Backend?"
+   ANSWER: "In production, the Node server serves the 'dist' folder 
+   from React as static files using Express middleware."
+
+3. "What happens if a user tries to access an Admin route?"
+   ANSWER: "The 'adminOnly' middleware will catch it, return a 403 
+   Forbidden status, and log the attempt for security monitoring."
+========================================================================
+I implemented Role-Based Access Control using custom Express middleware.
+The system uses JWT tokens to verify identity. 
+Once the identity is verified, my 'adminOnly' middleware checks 
+the user's role in the database. 
+If a non-admin attempts to access a protected route—like deleting 
+a project—the middleware intercepts the request and returns 
+a 403 Forbidden status, ensuring that sensitive actions are
+only performed by authorized personnel."

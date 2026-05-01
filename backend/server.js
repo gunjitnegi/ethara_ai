@@ -5,7 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('mongo-sanitize');
-const xss = require('xss-clean');
+const xss = require('xss');
 const { connectDB } = require('./config/db');
 const path = require('path');
 
@@ -16,20 +16,37 @@ app.set('trust proxy', 1);
 
 // Middleware
 app.use(helmet()); // Security headers
-app.use(xss());    // Data sanitization against XSS
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   credentials: true
 }));
 
-// Body parser must come BEFORE sanitization to handle large payloads (like photos)
+// Body parser must come BEFORE sanitization
 app.use(express.json({ limit: '10mb' }));
 
+// Custom Security Sanitization Middleware
 app.use((req, res, next) => {
+  // Sanitize for NoSQL Injection
   if (req.body) req.body = mongoSanitize(req.body);
   if (req.query) req.query = mongoSanitize(req.query);
   if (req.params) req.params = mongoSanitize(req.params);
+
+  // Sanitize for XSS (Cross-Site Scripting)
+  const sanitize = (obj) => {
+    for (let key in obj) {
+      if (typeof obj[key] === 'string') {
+        obj[key] = xss(obj[key]);
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        sanitize(obj[key]);
+      }
+    }
+  };
+
+  if (req.body) sanitize(req.body);
+  if (req.query) sanitize(req.query);
+  if (req.params) sanitize(req.params);
+
   next();
 });
 
