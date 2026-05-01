@@ -23,7 +23,8 @@
     "mongo-sanitize": "^1.1.0",
     "mongoose": "^9.6.1",
     "ua-parser-js": "^2.0.9",
-    "uuid": "^14.0.0"
+    "uuid": "^14.0.0",
+    "xss-clean": "^0.1.4"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

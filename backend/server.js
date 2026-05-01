@@ -5,6 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('mongo-sanitize');
+const xss = require('xss-clean');
 const { connectDB } = require('./config/db');
 const path = require('path');
 
@@ -15,6 +16,7 @@ app.set('trust proxy', 1);
 
 // Middleware
 app.use(helmet()); // Security headers
+app.use(xss());    // Data sanitization against XSS
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
@@ -82,8 +84,19 @@ connectDB().then(() => {
 
   // Global Error Handler
   app.use((err, req, res, next) => {
-    console.error('Unhandled Express Error:', err.stack);
-    res.status(500).json({ message: 'Internal Server Error' });
+    // Log the actual error internally
+    console.error(`[Express Error] ${req.method} ${req.path}:`, err.stack);
+
+    // Send a clean message to the client
+    const status = err.status || 500;
+    const message = process.env.NODE_ENV === 'production' 
+      ? 'Internal Server Error' 
+      : err.message;
+
+    res.status(status).json({ 
+      message,
+      ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
+    });
   });
 }).catch(err => {
   console.error("Failed to start server:", err);
