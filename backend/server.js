@@ -53,7 +53,7 @@ connectDB().then(() => {
   const taskRoutes = require('./routes/task.routes');
   const notificationRoutes = require('./routes/notification.routes');
 
-  // Routes
+  // API Routes
   app.use('/auth', authLimiter, authRoutes);
   app.use('/projects', projectRoutes);
   app.use('/tasks', taskRoutes);
@@ -64,7 +64,7 @@ connectDB().then(() => {
     const frontendPath = path.resolve(__dirname, '..', 'frontend', 'dist');
     app.use(express.static(frontendPath));
     
-    // Express 5 compatible catch-all: Use a middleware instead of a string path
+    // Express 5 compatible catch-all
     app.use((req, res, next) => {
       if (req.method === 'GET' && !req.path.startsWith('/auth') && !req.path.startsWith('/projects') && !req.path.startsWith('/tasks') && !req.path.startsWith('/notifications')) {
         return res.sendFile(path.join(frontendPath, 'index.html'));
